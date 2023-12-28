@@ -25,7 +25,7 @@ class Transaksi extends ResourceController
         $data = $model->find($id);
 
         if (!$data) {
-            return $this->failNotFound('No Data Found');
+            return $this->failNotFound('Data Not Found');
         }
 
         return $this->respond($data);
@@ -60,11 +60,9 @@ class Transaksi extends ResourceController
         $model->save($data);
 
         $response = [
-            'status' => 201,
-            'error' => null,
-            'messages' => [
-                'success' => 'Data Inserted'
-            ]
+            'status' => 200,
+            'messages' => 'Data Berhasil di Tambahkan',
+            'data' => $data
         ];
 
         return $this->respondCreated($response);
@@ -100,10 +98,8 @@ class Transaksi extends ResourceController
 
         $response = [
             'status' => 200,
-            'error' => null,
-            'messages' => [
-                'success' => 'Data Updated'
-            ]
+            'messages' => 'Data Berhasil di Update',
+            'data' => $data
         ];
 
         return $this->respond($response);
@@ -117,10 +113,8 @@ class Transaksi extends ResourceController
 
         $response = [
             'status' => 200,
-            'error' => null,
-            'messages' => [
-                'success' => 'Data Deleted'
-            ]
+            'messages' => 'Data Berhasil di Hapus'
+            
         ];
 
         return $this->respond($response);

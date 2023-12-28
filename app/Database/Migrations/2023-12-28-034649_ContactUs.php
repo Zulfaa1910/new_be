@@ -5,7 +5,7 @@ namespace App\Database\Migrations;
 use CodeIgniter\Database\RawSql;
 use CodeIgniter\Database\Migration;
 
-class Users extends Migration
+class ContactUs extends Migration
 {
     public function up()
     {
@@ -19,33 +19,25 @@ class Users extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'username' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'password' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
             'email' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
+            ],
+            'message' => [
+                'type' => 'TEXT',
+                'null' => true,
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',
                 'default' => new RawSql('CURRENT_TIMESTAMP'),
             ],
-            'updated_at' => [
-                'type'    => 'TIMESTAMP',
-                'default' => new RawSql('CURRENT_TIMESTAMP'),
-            ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('users');
+        $this->forge->createTable('contact_us');
     }
 
     public function down()
     {
-        $this->forge->dropTable('users');
+        $this->forge->dropTable('contact_us');
     }
 }

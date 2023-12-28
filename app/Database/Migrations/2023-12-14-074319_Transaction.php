@@ -1,52 +1,47 @@
 <?php
 
-namespace App\Database\Migrations;
+namespace App\Models;
 
-use CodeIgniter\Database\Migration;
+use CodeIgniter\Model;
 
-class CreateTransaksiTable extends Migration
+class TransaksiModel extends Model
 {
-    public function up()
-    {
-        $this->forge->addField([
-            'id_transaksi' => [
-                'type' => 'INT',
-                'constraint' => 20,
-                'unsigned' => true,
-                'auto_increment' => true,
-            ],
-            'nama' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'no_tlp' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'alamat' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'metode_pembayaran' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'created_at' => [
-                'type' => 'DATETIME',
-                'null' => true,
-            ],
-            'updated_at' => [
-                'type' => 'DATETIME',
-                'null' => true,
-            ],
-        ]);
+    protected $table = 'transaksii';
+    protected $primaryKey = 'id_transaksi';
+    protected $useAutoIncrement = true;
+    protected $returnType = 'array';
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = ['nama', 'no_tlp', 'alamat', 'metode_pembayaran', 'created_at', 'updated_at'];
 
-        $this->forge->addKey('id_transaksi', true);
-        $this->forge->createTable('transaksi');
-    }
+    // Dates
+    protected $useTimestamps = true;
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+    protected $deletedField = 'deleted_at';
 
-    public function down()
-    {
-        $this->forge->dropTable('transaksi');
-    }
+    // Validation
+    protected $validationRules = [
+        'nama' => 'required',
+        'no_tlp' => 'required',
+        'alamat' => 'required',
+        'metode_pembayaran' => 'required',
+        // Add other validation rules for your fields
+    ];
+    
+    protected $validationMessages = [];
+    protected $skipValidation = false;
+    protected $cleanValidationRules = true;
+
+    // Callbacks
+    protected $allowCallbacks = true;
+    protected $beforeInsert = [];
+    protected $afterInsert = [];
+    protected $beforeUpdate = [];
+    protected $afterUpdate = [];
+    protected $beforeFind = [];
+    protected $afterFind = [];
+    protected $beforeDelete = [];
+    protected $afterDelete = [];
 }

@@ -1,18 +1,18 @@
 <?php
+
 namespace App\Controllers;
 
-use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\API\ResponseTrait;
 use App\Models\UserModel;
+use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\RESTful\ResourceController;
 
-class User extends ResourceController
+class Users extends ResourceController
 {
     /**
      * Return an array of resource objects, themselves in array format
      *
      * @return mixed
      */
-
     use ResponseTrait;
     public function index()
     {
@@ -20,6 +20,7 @@ class User extends ResourceController
         $data = $model->findAll();
         return $this->respond($data);
     }
+ 
     /**
      * Return the properties of a resource object
      *
@@ -29,10 +30,10 @@ class User extends ResourceController
     {
         $model = new UserModel();
         $data = $model->find(['id' => $id]);
-        if (!$data)
-            return $this->FailNotFound('No Data Found');
+        if(!$data) return $this->failNotFound('No Data Found');
         return $this->respond($data[0]);
     }
+ 
     /**
      * Create a new resource object, from "posted" parameters
      *
@@ -42,16 +43,18 @@ class User extends ResourceController
     {
         helper(['form']);
         $rules = [
-            'riwayat' => 'required',
-            'tanggal' => 'required'
+            'nama' => 'required',
+            'username' => 'required|is_unique[users.username]',
+            'password' => 'required|min_length[8]',
+            'email' => 'required|valid_email'
         ];
         $data = [
-            'riwayat' => $this->request->getVar('riwayat'),
-            'tanggal' => $this->request->getVar('tanggal'),
+            'nama' => $this->request->getVar('nama'),
+            'username' => $this->request->getVar('username'),
+            'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
+            'email' => $this->request->getVar('email')
         ];
-        if (!$this->validate($rules))
-            return
-                $this->fail($this->validator->getErrors());
+        if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
         $model = new UserModel();
         $model->save($data);
         $response = [
@@ -63,6 +66,7 @@ class User extends ResourceController
         ];
         return $this->respondCreated($response);
     }
+ 
     /**
      * Add or update a model resource, from "posted" properties
      *
@@ -72,20 +76,21 @@ class User extends ResourceController
     {
         helper(['form']);
         $rules = [
-            'riwayat' => 'required',
-            'tanggal' => 'required'
+            'nama' => 'required',
+            'username' => 'required',
+            'password' => 'min_length[8]',
+            'email' => 'required|valid_email'
         ];
         $data = [
-            'riwayat' => $this->request->getVar('riwayat'),
-            'tanggal' => $this->request->getVar('tanggal'),
+            'nama' => $this->request->getVar('nama'),
+            'username' => $this->request->getVar('username'),
+            'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
+            'email' => $this->request->getVar('email')
         ];
-        if (!$this->validate($rules))
-            return
-                $this->fail($this->validator->getErrors());
+        if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
         $model = new UserModel();
         $findById = $model->find(['id' => $id]);
-        if (!$findById)
-            return $this->FailNotFound('No Data Found');
+        if(!$findById) return $this->failNotFound('No Data Found');
         $model->update($id, $data);
         $response = [
             'status' => 200,
@@ -96,6 +101,7 @@ class User extends ResourceController
         ];
         return $this->respond($response);
     }
+ 
     /**
      * Delete the designated resource object from the model
      *
@@ -105,8 +111,7 @@ class User extends ResourceController
     {
         $model = new UserModel();
         $findById = $model->find(['id' => $id]);
-        if (!$findById)
-            return $this->FailNotFound('No Data Found');
+        if(!$findById) return $this->failNotFound('No Data Found');
         $model->delete($id);
         $response = [
             'status' => 200,
